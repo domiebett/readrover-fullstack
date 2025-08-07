@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { apiFetch } from '../utils/apiFetch';
 
 export default function Health() {
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/health")
+    apiFetch("/health")
       .then((res) => {
         if (!res.ok) throw new Error("Backend not healthy");
         return res.json();
