@@ -1,18 +1,18 @@
 # For testing
 pytest
+pytest-asyncio
 httpx
-# For Alembic sync migrations
-fastapi
-pydantic[email]
-# For Alembic sync migrations
-psycopg2-binary
-uvicorn
-python-jose[cryptography]
-passlib[bcrypt]
-python-multipart
-
 # Database and env management
 sqlalchemy[asyncio]
 asyncpg
 alembic
 python-dotenv
+aiosqlite
+# For Alembic sync migrations
+fastapi
+pydantic[email]
+psycopg2-binary
+uvicorn
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
