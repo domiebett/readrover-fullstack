@@ -1,7 +1,11 @@
+# For testing
+pytest
+httpx
+# For Alembic sync migrations
+fastapi
 pydantic[email]
 # For Alembic sync migrations
 psycopg2-binary
-fastapi
 uvicorn
 python-jose[cryptography]
 passlib[bcrypt]

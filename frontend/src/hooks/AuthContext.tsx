@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
+import { setGlobal401Handler, apiFetch } from '../utils/apiFetch';
+import { useNavigate } from 'react-router-dom';
 
 export type AuthStatus = 'pending' | 'authenticated' | 'unauthenticated';
 
@@ -12,6 +14,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [auth, setAuth] = useState<AuthStatus>('pending');
+  const navigate = useNavigate();
 
   const checkAuth = async () => {
     setAuth('pending');
@@ -22,6 +25,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAuth('unauthenticated');
     }
   };
+
+  // Set up global 401 handler
+  useEffect(() => {
+    setGlobal401Handler(async () => {
+      setAuth('unauthenticated');
+      await apiFetch('/logout', { method: 'POST' });
+      navigate('/login', { replace: true });
+    });
+  }, [navigate]);
 
   useEffect(() => {
     checkAuth();

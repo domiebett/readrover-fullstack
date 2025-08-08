@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { useAuthStatus } from '../hooks/useAuthStatus';
+import { useAuthContext } from '../hooks/AuthContext';
 
 
 interface AuthRouteProps {
@@ -8,7 +8,7 @@ interface AuthRouteProps {
 }
 
 export default function AuthRoute({ requireAuth, children }: AuthRouteProps) {
-  const auth = useAuthStatus();
+  const { auth } = useAuthContext();
 
   if (auth === 'pending') return <div>Loading...</div>;
   if (requireAuth && auth === 'unauthenticated') return <Navigate to="/login" replace />;
