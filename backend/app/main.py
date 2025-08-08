@@ -1,17 +1,19 @@
+
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from app.api.routes import health
 from app.api.routes import auth
 from app.core.database import setup_database
-
-app = FastAPI()
+from contextlib import asynccontextmanager
 
 load_dotenv()
 
-# Run DB setup on startup
-@app.on_event("startup")
-async def on_startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     await setup_database()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 app.include_router(health.router, prefix="/api")
 app.include_router(auth.router, prefix="/api")
