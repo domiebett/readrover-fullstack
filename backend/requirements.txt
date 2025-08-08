@@ -1,3 +1,5 @@
+# For Alembic sync migrations
+psycopg2-binary
 fastapi
 uvicorn
 python-jose[cryptography]
