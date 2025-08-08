@@ -1,5 +1,5 @@
 
-// Usage: await apiFetch('/protected', { method: 'GET' })
+// Usage: await apiFetch('/me', { method: 'GET' })
 export async function apiFetch(input: RequestInfo, init?: RequestInit) {
   let url = typeof input === 'string' ? input : input.url;
   if (url.startsWith('/')) {

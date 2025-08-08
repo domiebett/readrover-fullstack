@@ -11,14 +11,14 @@ function App() {
   return (
     <Router>
       <nav>
-        <Link to="/">Home</Link> | <Link to="/health">Health</Link> | <Link to="/login">Login</Link> | <Link to="/protected">Protected</Link>
+        <Link to="/">Home</Link> | <Link to="/health">Health</Link> | <Link to="/login">Login</Link> | <Link to="/me">Protected</Link>
         <LogoutButton />
       </nav>
       <Routes>
         <Route path="/login" element={<AuthRoute requireAuth={false}><Login /></AuthRoute>} />
         <Route path="/health" element={<Health />} />
         <Route path="/" element={<AuthRoute requireAuth={true}><Home /></AuthRoute>} />
-        <Route path="/protected" element={<AuthRoute requireAuth={true}><Protected /></AuthRoute>} />
+        <Route path="/me" element={<AuthRoute requireAuth={true}><Protected /></AuthRoute>} />
       </Routes>
     </Router>
   )

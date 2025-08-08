@@ -16,7 +16,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const checkAuth = async () => {
     setAuth('pending');
     try {
-      const res = await fetch('/api/protected', { credentials: 'include' });
+      const res = await fetch('/api/me', { credentials: 'include' });
       setAuth(res.ok ? 'authenticated' : 'unauthenticated');
     } catch {
       setAuth('unauthenticated');

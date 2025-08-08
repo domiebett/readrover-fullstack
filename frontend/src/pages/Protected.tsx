@@ -7,7 +7,7 @@ const Protected = () => {
   const apiFetch = useApiFetch();
 
   useEffect(() => {
-    apiFetch('/protected')
+    apiFetch('/me')
       .then(async res => {
         if (res.ok) {
           const data = await res.json();

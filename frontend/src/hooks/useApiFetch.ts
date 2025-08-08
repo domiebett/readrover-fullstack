@@ -1,7 +1,7 @@
 import { useAuthContext } from './AuthContext';
 import { apiFetch } from '../utils/apiFetch';
 
-// Usage: const fetchWithAuth = useApiFetch(); await fetchWithAuth('/protected', { method: 'GET' })
+// Usage: const fetchWithAuth = useApiFetch(); await fetchWithAuth('/me', { method: 'GET' })
 export function useApiFetch() {
   const { checkAuth } = useAuthContext();
 
