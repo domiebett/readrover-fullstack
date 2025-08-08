@@ -1,33 +1,30 @@
+
+# --- Imports ---
 from passlib.context import CryptContext
 from typing import Optional
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
-
 from fastapi import HTTPException, Request, Depends
 import os
+
+# --- Config ---
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60))
 
+# --- Password Hashing ---
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)
 
-# Dummy user for demonstration
-fake_user_db = {
-    "user@example.com": {
-        "username": "user@example.com",
-        "full_name": "Test User",
-        "hashed_password": pwd_context.hash("password123"),
-    }
-}
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
-def authenticate_user(username: str, password: str):
-    user = fake_user_db.get(username)
+def authenticate_user(user, password: str):
     if not user:
         return False
-    if not verify_password(password, user["hashed_password"]):
+    if not verify_password(password, user.hashed_password):
         return False
     return user
 

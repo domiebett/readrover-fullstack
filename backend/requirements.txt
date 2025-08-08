@@ -1,3 +1,4 @@
+pydantic[email]
 # For Alembic sync migrations
 psycopg2-binary
 fastapi
