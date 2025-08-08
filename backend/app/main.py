@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 
 load_dotenv()
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await setup_database()
@@ -17,6 +18,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(health.router, prefix="/api")
 app.include_router(auth.router, prefix="/api")
+
 
 @app.get("/")
 def read_root():

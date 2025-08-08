@@ -4,6 +4,8 @@ from app.utils.database_utils import get_async_database_url
 
 
 _engine = None
+
+
 def get_engine():
     global _engine
     if _engine is None:
@@ -12,16 +14,21 @@ def get_engine():
 
 
 def get_session_maker():
-    return sessionmaker(get_engine(), class_=AsyncSession, expire_on_commit=False)
+    return sessionmaker(
+        get_engine(), class_=AsyncSession, expire_on_commit=False
+    )
+
 
 async def get_db():
     SessionLocal = get_session_maker()
     async with SessionLocal() as session:
         yield session
 
+
 async def setup_database():
     engine = get_engine()
-    # Attempt to connect to the database and execute a simple query to verify connectivity
+    # Attempt to connect to the database and execute a simple query
+    # to verify connectivity
     try:
         async with engine.begin() as conn:
             await conn.execute("SELECT 1")

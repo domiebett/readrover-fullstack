@@ -15,9 +15,15 @@ def get_db_connection_params():
 
 def get_async_database_url():
     p = get_db_connection_params()
-    return f"postgresql+asyncpg://{p['user']}:{p['password']}@{p['host']}:{p['port']}/{p['db']}"
+    return (
+        f"postgresql+asyncpg://{p['user']}:{p['password']}"
+        f"@{p['host']}:{p['port']}/{p['db']}"
+    )
 
 
 def get_sync_database_url():
     p = get_db_connection_params()
-    return f"postgresql://{p['user']}:{p['password']}@{p['host']}:{p['port']}/{p['db']}"
+    return (
+        f"postgresql://{p['user']}:{p['password']}"
+        f"@{p['host']}:{p['port']}/{p['db']}"
+    )
