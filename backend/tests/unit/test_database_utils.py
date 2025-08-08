@@ -1,6 +1,5 @@
-import os
-import pytest
 from app.utils import database_utils
+
 
 def test_get_db_connection_params(monkeypatch):
     monkeypatch.setenv("POSTGRES_USER", "testuser")
@@ -17,6 +16,7 @@ def test_get_db_connection_params(monkeypatch):
         'db': 'testdb',
     }
 
+
 def test_get_async_database_url(monkeypatch):
     monkeypatch.setenv("POSTGRES_USER", "asyncuser")
     monkeypatch.setenv("POSTGRES_PASSWORD", "asyncpass")
@@ -24,7 +24,10 @@ def test_get_async_database_url(monkeypatch):
     monkeypatch.setenv("POSTGRES_PORT", "5678")
     monkeypatch.setenv("POSTGRES_DB", "asyncdb")
     url = database_utils.get_async_database_url()
-    assert url == "postgresql+asyncpg://asyncuser:asyncpass@asynchost:5678/asyncdb"
+    assert url == (
+        "postgresql+asyncpg://asyncuser:asyncpass@asynchost:5678/asyncdb"
+    )
+
 
 def test_get_sync_database_url(monkeypatch):
     monkeypatch.setenv("POSTGRES_USER", "syncuser")

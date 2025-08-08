@@ -1,10 +1,14 @@
 
-import pytest
 from jose import jwt
 from app.utils import auth_utils
 
 test_secret = "test-secret"
 test_algorithm = "HS256"
+
+
+class DummyUser:
+    def __init__(self, hashed_password):
+        self.hashed_password = hashed_password
 
 
 def test_get_password_hash_and_verify(monkeypatch):
@@ -17,18 +21,17 @@ def test_get_password_hash_and_verify(monkeypatch):
     assert auth_utils.verify_password(password, hashed)
     assert not auth_utils.verify_password("wrong", hashed)
 
+
 def test_authenticate_user(monkeypatch):
     monkeypatch.setenv("SECRET_KEY", test_secret)
     monkeypatch.setenv("ALGORITHM", test_algorithm)
-    class DummyUser:
-        def __init__(self, hashed_password):
-            self.hashed_password = hashed_password
     password = "pw"
     hashed = auth_utils.get_password_hash(password)
     user = DummyUser(hashed)
     assert auth_utils.authenticate_user(user, password) == user
     assert not auth_utils.authenticate_user(user, "bad")
     assert not auth_utils.authenticate_user(None, password)
+
 
 def test_create_access_token(monkeypatch):
     monkeypatch.setenv("SECRET_KEY", test_secret)

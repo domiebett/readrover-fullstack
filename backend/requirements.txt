@@ -2,6 +2,7 @@
 pytest
 pytest-asyncio
 httpx
+flake8
 # Database and env management
 sqlalchemy[asyncio]
 asyncpg

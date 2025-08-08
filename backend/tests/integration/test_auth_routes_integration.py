@@ -1,14 +1,12 @@
 import pytest
 from httpx import AsyncClient, ASGITransport
 from fastapi import status
-
 from app.main import app
 from app.core.database import get_db
-from tests.integration.test_db_setup import override_get_db, setup_test_db
-
-
+from tests.integration.test_db_setup import override_get_db
 # --- Fixtures and helpers ---
 import pytest_asyncio
+
 
 @pytest_asyncio.fixture()
 async def async_client(setup_test_db):
@@ -18,13 +16,16 @@ async def async_client(setup_test_db):
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
 
+
 async def register_user(client, data):
     resp = await client.post("/api/register", json=data)
     return resp
 
+
 async def login_user(client, data):
     resp = await client.post("/api/login", data=data)
     return resp
+
 
 # --- Tests ---
 @pytest.mark.asyncio
@@ -41,7 +42,10 @@ async def test_register_and_login_flow(async_client):
     assert resp.status_code == status.HTTP_201_CREATED
     assert resp.json()["email"] == "integration@example.com"
 
-    login_data = {"username": "integration@example.com", "password": "password123"}
+    login_data = {
+        "username": "integration@example.com",
+        "password": "password123"
+    }
     resp = await login_user(async_client, login_data)
     assert resp.status_code == 200
     assert resp.json()["msg"] == "Login successful"
@@ -50,6 +54,7 @@ async def test_register_and_login_flow(async_client):
     resp = await async_client.post("/api/logout")
     assert resp.status_code == 200
     assert resp.json()["msg"] == "Logged out"
+
 
 @pytest.mark.asyncio
 async def test_register_duplicate(async_client):
@@ -66,6 +71,7 @@ async def test_register_duplicate(async_client):
     resp = await register_user(async_client, register_data)
     assert resp.status_code == 400
     assert "already registered" in resp.json()["detail"]
+
 
 @pytest.mark.asyncio
 async def test_login_invalid(async_client):
