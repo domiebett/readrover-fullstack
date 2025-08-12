@@ -15,14 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form/form";
 
 const schema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -54,34 +47,54 @@ export default function LoginPage() {
     <div className="container flex items-center justify-center min-h-screen py-8">
       <Card className="w-[380px]">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
+          <CardTitle role="heading" aria-level={1}>Login</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit((data) => mut.mutate(data))} className="space-y-4">
+            <form 
+              onSubmit={form.handleSubmit((data) => mut.mutate(data))} 
+              className="space-y-4"
+              noValidate
+            >
               <FormField
                 control={form.control}
                 name="email"
-                render={({ field }) => (
+                render={({ field, formState }) => (
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your email" type="email" {...field} />
+                      <Input 
+                        placeholder="Enter your email" 
+                        type="email" 
+                        aria-invalid={!!formState.errors.email}
+                        aria-describedby={
+                          formState.errors.email ? `${field.name}-error` : undefined
+                        }
+                        {...field} 
+                      />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage data-testid="email-error" />
                   </FormItem>
                 )}
               />
               <FormField
                 control={form.control}
                 name="password"
-                render={({ field }) => (
+                render={({ field, formState }) => (
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your password" type="password" {...field} />
+                      <Input 
+                        placeholder="Enter your password" 
+                        type="password"
+                        aria-invalid={!!formState.errors.password}
+                        aria-describedby={
+                          formState.errors.password ? `${field.name}-error` : undefined
+                        }
+                        {...field} 
+                      />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage data-testid="password-error" />
                   </FormItem>
                 )}
               />

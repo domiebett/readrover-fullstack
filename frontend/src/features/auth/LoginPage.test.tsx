@@ -26,7 +26,7 @@ describe('LoginPage', () => {
   it('should render login form with all fields', () => {
     render(<LoginPage />)
     
-    expect(screen.getByText('Login')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Login' })).toBeInTheDocument()
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument()
@@ -38,7 +38,12 @@ describe('LoginPage', () => {
     const user = userEvent.setup()
     render(<LoginPage />)
     
+    const emailInput = screen.getByLabelText(/email/i)
+    const passwordInput = screen.getByLabelText(/password/i)
     const submitButton = screen.getByRole('button', { name: 'Login' })
+    
+    await user.type(emailInput, 'invalid')
+    await user.type(passwordInput, '123')
     await user.click(submitButton)
     
     await waitFor(() => {

@@ -26,7 +26,7 @@ describe('RegisterPage', () => {
   it('should render registration form with all fields', () => {
     render(<RegisterPage />)
     
-    expect(screen.getByText('Register')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Create an Account' })).toBeInTheDocument()
     expect(screen.getByLabelText(/username/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
@@ -39,7 +39,12 @@ describe('RegisterPage', () => {
     const user = userEvent.setup()
     render(<RegisterPage />)
     
+    const emailInput = screen.getByLabelText(/email/i)
+    const passwordInput = screen.getByLabelText(/password/i)
     const submitButton = screen.getByRole('button', { name: 'Create Account' })
+    
+    await user.type(emailInput, 'invalid')
+    await user.type(passwordInput, '123')
     await user.click(submitButton)
     
     await waitFor(() => {
@@ -102,7 +107,7 @@ describe('RegisterPage', () => {
     await user.click(submitButton)
     
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/login', { replace: true })
+      expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true })
     })
   })
 

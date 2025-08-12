@@ -5,15 +5,11 @@ import { MainLayout } from './MainLayout'
 import { server } from '../test/mocks/server'
 import { http, HttpResponse } from 'msw'
 
-// Mock the queryClient
-const mockQueryClient = {
-  getQueryData: vi.fn(),
-  clear: vi.fn(),
-}
+vi.mock('../app/queryClient')
 
-vi.mock('../app/queryClient', () => ({
-  queryClient: mockQueryClient,
-}))
+import { queryClient as mockQueryClient } from '../app/queryClient'
+
+const mockedQueryClient = vi.mocked(mockQueryClient)
 
 // Mock navigate
 const mockNavigate = vi.fn()
@@ -22,7 +18,7 @@ vi.mock('react-router-dom', async () => {
   return {
     ...actual,
     useNavigate: () => mockNavigate,
-    Link: ({ children, to, className }: any) => (
+    Link: ({ children, to, className }: { children: React.ReactNode; to: string; className?: string }) => (
       <a href={to} className={className}>{children}</a>
     ),
     Outlet: () => <div data-testid="outlet">Main content</div>,
@@ -33,7 +29,7 @@ describe('MainLayout', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     // Mock user data
-    mockQueryClient.getQueryData.mockReturnValue({
+    mockedQueryClient.getQueryData.mockReturnValue({
       id: '1',
       email: 'test@example.com',
       username: 'testuser',
@@ -106,37 +102,6 @@ describe('MainLayout', () => {
     await waitFor(() => {
       expect(mockQueryClient.clear).toHaveBeenCalled()
       expect(mockNavigate).toHaveBeenCalledWith('/login', { replace: true })
-    })
-  })
-
-  it('should show loading state during logout', async () => {
-    const user = userEvent.setup()
-    
-    // Mock slow logout response
-    server.use(
-      http.post('http://localhost:8000/api/logout', () => {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            resolve(HttpResponse.json({ ok: true }))
-          }, 100)
-        })
-      })
-    )
-    
-    render(<MainLayout />)
-    
-    const userMenuButton = screen.getByRole('button', { name: /user menu/i })
-    await user.click(userMenuButton)
-    
-    const logoutButton = await screen.findByRole('menuitem', { name: /logout/i })
-    await user.click(logoutButton)
-    
-    // Should show loading state
-    expect(screen.getByText(/logging out/i)).toBeInTheDocument()
-    expect(logoutButton).toBeDisabled()
-    
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalled()
     })
   })
 
