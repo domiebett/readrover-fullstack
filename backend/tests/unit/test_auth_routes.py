@@ -10,8 +10,7 @@ from sqlalchemy.exc import IntegrityError
 @pytest.mark.asyncio
 async def test_register_user_success(monkeypatch):
     user_in = UserCreate(
-        first_name="A",
-        last_name="B",
+        username="testuser",
         email="test@example.com",
         password="password123"
     )
@@ -25,7 +24,7 @@ async def test_register_user_success(monkeypatch):
         auth, "get_password_hash", MagicMock(return_value="hashed_pw")
     )
     fake_user = User(
-        id=1, first_name="A", last_name="B", email="test@example.com",
+        id=1, username="testuser", email="test@example.com",
         hashed_password="hashed_pw"
     )
     monkeypatch.setattr(
@@ -39,8 +38,7 @@ async def test_register_user_success(monkeypatch):
 @pytest.mark.asyncio
 async def test_register_user_already_exists(monkeypatch):
     user_in = UserCreate(
-        first_name="A",
-        last_name="B",
+        username="testuser",
         email="test@example.com",
         password="password123"
     )
@@ -59,7 +57,7 @@ async def test_register_user_already_exists(monkeypatch):
 @pytest.mark.asyncio
 async def test_register_user_integrity_error(monkeypatch):
     user_in = UserCreate(
-        first_name="A", last_name="B", email="test@example.com",
+        username="testuser", email="test@example.com",
         password="password123"
     )
     db = AsyncMock()
@@ -86,7 +84,7 @@ async def test_register_user_integrity_error(monkeypatch):
 async def test_login_success(monkeypatch):
     response = MagicMock()
     form_data = MagicMock()
-    form_data.username = "test@example.com"
+    form_data.email = "test@example.com"
     form_data.password = "password123"
     db = AsyncMock()
     fake_user = User(
@@ -118,7 +116,7 @@ async def test_login_success(monkeypatch):
 async def test_login_invalid_credentials(monkeypatch):
     response = MagicMock()
     form_data = MagicMock()
-    form_data.username = "test@example.com"
+    form_data.email = "test@example.com"
     form_data.password = "wrongpw"
     db = AsyncMock()
     fake_user = User(
@@ -137,7 +135,7 @@ async def test_login_invalid_credentials(monkeypatch):
     with pytest.raises(HTTPException) as exc:
         await auth.login(response, form_data, db)
     assert exc.value.status_code == status.HTTP_401_UNAUTHORIZED
-    assert "Incorrect username or password" in exc.value.detail
+    assert "Incorrect email or password" in exc.value.detail
 
 
 def test_logout_sets_cookie_header():

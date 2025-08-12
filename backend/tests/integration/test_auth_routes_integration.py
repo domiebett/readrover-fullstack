@@ -23,7 +23,7 @@ async def register_user(client, data):
 
 
 async def login_user(client, data):
-    resp = await client.post("/api/login", data=data)
+    resp = await client.post("/api/login", json=data)
     return resp
 
 
@@ -31,8 +31,7 @@ async def login_user(client, data):
 @pytest.mark.asyncio
 async def test_register_and_login_flow(async_client):
     register_data = {
-        "first_name": "A",
-        "last_name": "B",
+        "username": "testuser",
         "email": "integration@example.com",
         "password": "password123"
     }
@@ -43,7 +42,7 @@ async def test_register_and_login_flow(async_client):
     assert resp.json()["email"] == "integration@example.com"
 
     login_data = {
-        "username": "integration@example.com",
+        "email": "integration@example.com",
         "password": "password123"
     }
     resp = await login_user(async_client, login_data)
@@ -59,8 +58,7 @@ async def test_register_and_login_flow(async_client):
 @pytest.mark.asyncio
 async def test_register_duplicate(async_client):
     register_data = {
-        "first_name": "A",
-        "last_name": "B",
+        "username": "dupeuser",
         "email": "dupe@example.com",
         "password": "password123"
     }
@@ -75,7 +73,7 @@ async def test_register_duplicate(async_client):
 
 @pytest.mark.asyncio
 async def test_login_invalid(async_client):
-    login_data = {"username": "notfound@example.com", "password": "wrongpw"}
+    login_data = {"email": "notfound@example.com", "password": "wrongpw"}
     resp = await login_user(async_client, login_data)
     assert resp.status_code == status.HTTP_401_UNAUTHORIZED
-    assert "Incorrect username or password" in resp.json()["detail"]
+    assert "Incorrect email or password" in resp.json()["detail"]

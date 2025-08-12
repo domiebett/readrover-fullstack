@@ -9,7 +9,7 @@ from tests.unit.test_utils import make_mock_db_execute, make_mock_db_commit
 @pytest.mark.asyncio
 async def test_get_user_by_email_case_insensitive_found():
     user = User(
-        id=1, first_name="A", last_name="B",
+        id=1, username="testuser",
         email="test@example.com", hashed_password="password123"
     )
     db = make_mock_db_execute(user)
@@ -34,8 +34,7 @@ async def test_get_user_by_email_case_insensitive_not_found():
 async def test_create_new_user_success():
     db = make_mock_db_commit()
     user_in = UserCreate(
-        first_name="A",
-        last_name="B",
+        username="testuser",
         email="test@example.com",
         password="password123"
     )
@@ -51,8 +50,7 @@ async def test_create_new_user_success():
 async def test_create_new_user_integrity_error():
     db = make_mock_db_commit(commit_side_effect=IntegrityError("", "", ""))
     user_in = UserCreate(
-        first_name="A",
-        last_name="B",
+        username="testuser",
         email="test@example.com",
         password="password123"
     )
