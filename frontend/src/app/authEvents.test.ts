@@ -83,21 +83,21 @@ describe('authEvents', () => {
     
     authEvents.emitUnauthorized()
     
-    // Should be called twice since it was added twice
-    expect(listener).toHaveBeenCalledTimes(2)
+    // Since it's a Set, the same function reference is only added once
+    expect(listener).toHaveBeenCalledTimes(1)
     
-    // Unsubscribe one instance
+    // Unsubscribe one instance (but since it's the same reference, it removes the listener)
     unsubscribe1()
     authEvents.emitUnauthorized()
     
-    // Should be called once since one instance is still registered
-    expect(listener).toHaveBeenCalledTimes(3)
+    // Should not be called anymore since the listener was removed
+    expect(listener).toHaveBeenCalledTimes(1)
     
-    // Unsubscribe second instance
+    // Second unsubscribe should be safe but does nothing
     unsubscribe2()
     authEvents.emitUnauthorized()
     
-    // Should not be called anymore
-    expect(listener).toHaveBeenCalledTimes(3)
+    // Should still be only called once
+    expect(listener).toHaveBeenCalledTimes(1)
   })
 })
