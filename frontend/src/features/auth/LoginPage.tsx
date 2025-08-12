@@ -94,7 +94,7 @@ export default function LoginPage() {
                         {...field} 
                       />
                     </FormControl>
-                    <FormMessage data-testid="password-error" />
+                    <FormMessage id={`${field.name}-error`} data-testid="password-error" />
                   </FormItem>
                 )}
               />

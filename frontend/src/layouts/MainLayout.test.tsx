@@ -29,7 +29,7 @@ describe('MainLayout', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     // Mock user data
-    mockedQueryClient.getQueryData.mockReturnValue({
+    queryClient.getQueryData.mockReturnValue({
       id: '1',
       email: 'test@example.com',
       username: 'testuser',
