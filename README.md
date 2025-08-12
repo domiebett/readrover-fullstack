@@ -1,6 +1,7 @@
 # Read Rover Project
 
 [![Backend Unit, Integration & Linting](https://github.com/domiebett/readrover-fullstack/actions/workflows/backend-tests.yml/badge.svg?branch=main)](https://github.com/domiebett/readrover-fullstack/actions/workflows/backend-tests.yml?query=branch%3Amain)
+[![Frontend Tests](https://github.com/domiebett/readrover-fullstack/actions/workflows/frontend-tests.yml/badge.svg?branch=main)](https://github.com/domiebett/readrover-fullstack/actions/workflows/frontend-tests.yml?query=branch%3Amain)
 
 Read Rover is a full-stack web application with a FastAPI backend and a React + Vite frontend.
 
@@ -21,6 +22,8 @@ Read Rover is a full-stack web application with a FastAPI backend and a React + 
 ## Testing & Quality
 - Pre-commit hook runs backend tests and flake8 before every commit.
 - Use `docker compose exec backend pytest` and `flake8` for backend checks.
+- Frontend tests run with `npm run test` in the frontend directory.
+- GitHub Actions automatically run tests for both backend and frontend on changes.
 
 ## Contact
 For project-wide questions, open an issue or contact the maintainers.
