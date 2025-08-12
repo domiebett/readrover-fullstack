@@ -1,4 +1,3 @@
-
 # --- Imports ---
 
 from passlib.context import CryptContext
@@ -58,9 +57,10 @@ def get_current_user(request: Request):
         raise HTTPException(status_code=401, detail="Not authenticated")
     try:
         payload = jwt.decode(token, SECRET_KEY(), algorithms=[ALGORITHM()])
-        username = payload.get("sub")
-        if username is None:
+        user_id = payload.get("sub")
+        email = payload.get("email")
+        if user_id is None or email is None:
             raise HTTPException(status_code=401, detail="Invalid token")
-        return username
+        return {"user_id": user_id, "email": email}
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")

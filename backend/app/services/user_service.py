@@ -18,8 +18,7 @@ async def create_new_user(
     hashed_password: str
 ):
     new_user = User(
-        first_name=user_in.first_name,
-        last_name=user_in.last_name,
+        username=user_in.username,
         email=user_in.email,
         hashed_password=hashed_password,
     )

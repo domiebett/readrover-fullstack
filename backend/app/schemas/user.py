@@ -1,8 +1,12 @@
-from pydantic import BaseModel, EmailStr, constr
+from pydantic import BaseModel, EmailStr
+
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
 
 
 class UserCreate(BaseModel):
-    first_name: constr(strip_whitespace=True, min_length=1, max_length=100)
-    last_name: constr(strip_whitespace=True, min_length=1, max_length=100)
+    username: str
     email: EmailStr
-    password: constr(min_length=8, max_length=255)
+    password: str

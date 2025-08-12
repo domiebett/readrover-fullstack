@@ -1,6 +1,5 @@
-
 from fastapi import APIRouter, Response, HTTPException, status, Depends
-from fastapi.security import OAuth2PasswordRequestForm
+from app.schemas.user import LoginRequest
 from app.utils.auth_utils import (
     authenticate_user,
     create_access_token,
@@ -41,16 +40,15 @@ async def register_user(
 @router.post("/login")
 async def login(
     response: Response,
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    body: LoginRequest,
     db: AsyncSession = Depends(get_db),
 ):
-    # Fetch user from DB by email (username)
-    db_user = await get_user_by_email_case_insensitive(db, form_data.username)
-    user = authenticate_user(db_user, form_data.password)
+    db_user = await get_user_by_email_case_insensitive(db, body.email)
+    user = authenticate_user(db_user, body.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password"
+            detail="Incorrect email or password"
         )
     access_token = create_access_token(
         data={"sub": str(user.id), "email": user.email}
@@ -73,5 +71,16 @@ def logout(response: Response):
 
 
 @router.get("/me")
-def me(username: str = Depends(get_current_user)):
-    return {"msg": f"Hello, {username}! This is a protected route."}
+async def me(
+    token_data: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    user = await get_user_by_email_case_insensitive(db, token_data["email"])
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {
+        "username": user.username,
+        "email": user.email,
+        "created_at": user.created_at,
+        "updated_at": user.updated_at,
+    }
