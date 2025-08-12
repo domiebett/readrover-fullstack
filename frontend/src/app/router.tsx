@@ -5,6 +5,7 @@ import LoginPage from "@/features/auth/LoginPage";
 import RegisterPage from "@/features/auth/RegisterPage";
 import ProfilePage from "@/features/profile/ProfilePage";
 import { AuthEventsHandler } from "./AuthEventsHandler";
+import { MainLayout } from "@/layouts/MainLayout";
 
 function Root() {
   return (
@@ -16,12 +17,23 @@ function Root() {
 }
 
 const router = createBrowserRouter([
-  { path: "/", element: <Root/>, children: [
-    { index: true, loader: requireAuthLoader, element: <HomePage/> },
-    { path: "login", loader: requireGuestLoader, element: <LoginPage/> },
-    { path: "register", loader: requireGuestLoader, element: <RegisterPage/> },
-    { path: "profile", loader: requireAuthLoader, element: <ProfilePage/> },
-  ]}
+  {
+    path: "/",
+    element: <Root />,
+    children: [
+      // Guest routes
+      { path: "login", loader: requireGuestLoader, element: <LoginPage /> },
+      { path: "register", loader: requireGuestLoader, element: <RegisterPage /> },
+      // Protected routes with MainLayout
+      {
+        element: <MainLayout />,
+        children: [
+          { index: true, loader: requireAuthLoader, element: <HomePage /> },
+          { path: "profile", loader: requireAuthLoader, element: <ProfilePage /> },
+        ],
+      },
+    ],
+  },
 ]);
 
 

@@ -39,12 +39,7 @@ export default function ProfilePage() {
 
   return (
     <div className="container py-10">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Profile</h1>
-        <Button asChild variant="outline">
-          <Link to="/">Back to Home</Link>
-        </Button>
-      </div>
+      <h1 className="text-2xl font-bold mb-6">Profile</h1>
       <Card>
         <CardHeader>
           <CardTitle>Profile Details</CardTitle>

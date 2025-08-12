@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { login } from "./api";
 import { useNavigate, Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
@@ -33,7 +33,6 @@ type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
   const nav = useNavigate();
-  const qc = useQueryClient();
   
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -46,7 +45,6 @@ export default function LoginPage() {
   const mut = useMutation({
     mutationFn: login,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["me"] });
       const p = new URLSearchParams(window.location.search);
       nav(p.get("from") || "/", { replace: true });
     },
