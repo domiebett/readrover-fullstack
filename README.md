@@ -1,5 +1,8 @@
 # Read Rover Project
 
+[![Main Backend Tests](https://github.com/domiebett/readrover-fullstack/actions/workflows/backend-tests.yml/badge.svg?branch=main)](https://github.com/domiebett/readrover-fullstack/actions/workflows/backend-tests.yml?query=branch%3Amain)
+[![Develop Backend Tests](https://github.com/domiebett/readrover-fullstack/actions/workflows/backend-tests.yml/badge.svg?branch=develop)](https://github.com/domiebett/readrover-fullstack/actions/workflows/backend-tests.yml)
+
 Read Rover is a full-stack web application with a FastAPI backend and a React + Vite frontend.
 
 ## Project Structure
