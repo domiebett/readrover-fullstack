@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '../../test/utils'
 import userEvent from '@testing-library/user-event'
-import LoginPage from './LoginPage'
+import RegisterPage from './RegisterPage'
 import { server } from '../../test/mocks/server'
 import { http, HttpResponse } from 'msw'
 
@@ -18,30 +18,32 @@ vi.mock('react-router-dom', async () => {
   }
 })
 
-describe('LoginPage', () => {
+describe('RegisterPage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  it('should render login form with all fields', () => {
-    render(<LoginPage />)
+  it('should render registration form with all fields', () => {
+    render(<RegisterPage />)
     
-    expect(screen.getByText('Login')).toBeInTheDocument()
+    expect(screen.getByText('Register')).toBeInTheDocument()
+    expect(screen.getByLabelText(/username/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument()
-    expect(screen.getByText(/don't have an account/i)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /register/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Create Account' })).toBeInTheDocument()
+    expect(screen.getByText(/already have an account/i)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /login/i })).toBeInTheDocument()
   })
 
   it('should show validation errors for invalid inputs', async () => {
     const user = userEvent.setup()
-    render(<LoginPage />)
+    render(<RegisterPage />)
     
-    const submitButton = screen.getByRole('button', { name: 'Login' })
+    const submitButton = screen.getByRole('button', { name: 'Create Account' })
     await user.click(submitButton)
     
     await waitFor(() => {
+      expect(screen.getByText(/username is required/i)).toBeInTheDocument()
       expect(screen.getByText(/please enter a valid email address/i)).toBeInTheDocument()
       expect(screen.getByText(/password must be at least 6 characters/i)).toBeInTheDocument()
     })
@@ -49,12 +51,12 @@ describe('LoginPage', () => {
 
   it('should show validation error for invalid email format', async () => {
     const user = userEvent.setup()
-    render(<LoginPage />)
+    render(<RegisterPage />)
     
     const emailInput = screen.getByLabelText(/email/i)
     await user.type(emailInput, 'invalid-email')
     
-    const submitButton = screen.getByRole('button', { name: /login/i })
+    const submitButton = screen.getByRole('button', { name: 'Create Account' })
     await user.click(submitButton)
     
     await waitFor(() => {
@@ -64,12 +66,12 @@ describe('LoginPage', () => {
 
   it('should show validation error for short password', async () => {
     const user = userEvent.setup()
-    render(<LoginPage />)
+    render(<RegisterPage />)
     
     const passwordInput = screen.getByLabelText(/password/i)
     await user.type(passwordInput, '123')
     
-    const submitButton = screen.getByRole('button', { name: /login/i })
+    const submitButton = screen.getByRole('button', { name: 'Create Account' })
     await user.click(submitButton)
     
     await waitFor(() => {
@@ -80,94 +82,66 @@ describe('LoginPage', () => {
   it('should submit form with valid data and navigate on success', async () => {
     const user = userEvent.setup()
     
-    // Mock successful login
+    // Mock successful registration
     server.use(
-      http.post('http://localhost:8000/api/login', () => {
+      http.post('http://localhost:8000/api/register', () => {
         return HttpResponse.json({ ok: true })
       })
     )
     
-    render(<LoginPage />)
+    render(<RegisterPage />)
     
+    const usernameInput = screen.getByLabelText(/username/i)
     const emailInput = screen.getByLabelText(/email/i)
     const passwordInput = screen.getByLabelText(/password/i)
-    const submitButton = screen.getByRole('button', { name: /login/i })
+    const submitButton = screen.getByRole('button', { name: 'Create Account' })
     
+    await user.type(usernameInput, 'testuser')
     await user.type(emailInput, 'test@example.com')
     await user.type(passwordInput, 'password123')
     await user.click(submitButton)
     
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true })
+      expect(mockNavigate).toHaveBeenCalledWith('/login', { replace: true })
     })
   })
 
-  it('should navigate to "from" parameter on successful login', async () => {
+  it('should show error message on failed registration', async () => {
     const user = userEvent.setup()
     
-    // Mock URL search params
-    Object.defineProperty(window, 'location', {
-      value: {
-        search: '?from=/profile'
-      },
-      writable: true
-    })
-    
+    // Mock failed registration
     server.use(
-      http.post('http://localhost:8000/api/login', () => {
-        return HttpResponse.json({ ok: true })
-      })
-    )
-    
-    render(<LoginPage />)
-    
-    const emailInput = screen.getByLabelText(/email/i)
-    const passwordInput = screen.getByLabelText(/password/i)
-    const submitButton = screen.getByRole('button', { name: /login/i })
-    
-    await user.type(emailInput, 'test@example.com')
-    await user.type(passwordInput, 'password123')
-    await user.click(submitButton)
-    
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/profile', { replace: true })
-    })
-  })
-
-  it('should show error message on failed login', async () => {
-    const user = userEvent.setup()
-    
-    // Mock failed login
-    server.use(
-      http.post('http://localhost:8000/api/login', () => {
+      http.post('http://localhost:8000/api/register', () => {
         return HttpResponse.json(
-          { detail: 'Invalid credentials' },
-          { status: 401 }
+          { detail: 'Username already exists' },
+          { status: 400 }
         )
       })
     )
     
-    render(<LoginPage />)
+    render(<RegisterPage />)
     
+    const usernameInput = screen.getByLabelText(/username/i)
     const emailInput = screen.getByLabelText(/email/i)
     const passwordInput = screen.getByLabelText(/password/i)
-    const submitButton = screen.getByRole('button', { name: /login/i })
+    const submitButton = screen.getByRole('button', { name: 'Create Account' })
     
+    await user.type(usernameInput, 'existinguser')
     await user.type(emailInput, 'test@example.com')
-    await user.type(passwordInput, 'wrongpassword')
+    await user.type(passwordInput, 'password123')
     await user.click(submitButton)
     
     await waitFor(() => {
-      expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument()
+      expect(screen.getByText(/username already exists/i)).toBeInTheDocument()
     })
   })
 
   it('should show loading state during submission', async () => {
     const user = userEvent.setup()
     
-    // Mock slow login response
+    // Mock slow registration response
     server.use(
-      http.post('http://localhost:8000/api/login', () => {
+      http.post('http://localhost:8000/api/register', () => {
         return new Promise(resolve => {
           setTimeout(() => {
             resolve(HttpResponse.json({ ok: true }))
@@ -176,22 +150,30 @@ describe('LoginPage', () => {
       })
     )
     
-    render(<LoginPage />)
+    render(<RegisterPage />)
     
+    const usernameInput = screen.getByLabelText(/username/i)
     const emailInput = screen.getByLabelText(/email/i)
     const passwordInput = screen.getByLabelText(/password/i)
-    const submitButton = screen.getByRole('button', { name: /login/i })
+    const submitButton = screen.getByRole('button', { name: 'Create Account' })
     
+    await user.type(usernameInput, 'testuser')
     await user.type(emailInput, 'test@example.com')
     await user.type(passwordInput, 'password123')
     await user.click(submitButton)
     
     // Should show loading state
     expect(submitButton).toBeDisabled()
-    expect(screen.getByRole('button')).toHaveTextContent(/login/i)
     
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalled()
     })
+  })
+
+  it('should have link to login page', () => {
+    render(<RegisterPage />)
+    
+    const loginLink = screen.getByRole('link', { name: /login/i })
+    expect(loginLink).toHaveAttribute('href', '/login')
   })
 })
