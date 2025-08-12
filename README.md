@@ -1,6 +1,7 @@
 # ReadRover
 
 [![Backend Unit, Integration & Linting](https://github.com/domiebett/readrover-fullstack/actions/workflows/backend-tests.yml/badge.svg?branch=main)](https://github.com/domiebett/readrover-fullstack/actions/workflows/backend-tests.yml?query=branch%3Amain)
+[![Frontend Tests](https://github.com/domiebett/readrover-fullstack/actions/workflows/frontend-tests.yml/badge.svg?branch=main)](https://github.com/domiebett/readrover-fullstack/actions/workflows/frontend-tests.yml?query=branch%3Amain)
 
 ReadRover is a modern book management and reading tracking application. Keep track of your reading journey, organize your books into shelves, and manage your personal library with an intuitive web interface.
 
@@ -121,6 +122,7 @@ docker compose exec frontend sh
 ## 🧪 Testing & Quality
 
 - **Automated Testing**: Backend includes comprehensive unit and integration tests
+- **Frontend Testing**: Comprehensive test suite with Vitest and React Testing Library
 - **Code Quality**: Flake8 linting for Python code, ESLint for TypeScript/React
 - **CI/CD**: GitHub Actions automatically run tests and linting on pull requests
 - **Pre-commit Hooks**: Automatically run tests and linting before commits
@@ -128,6 +130,9 @@ docker compose exec frontend sh
 ```bash
 # Run all backend tests and linting
 cd backend && ./run-checks.sh
+
+# Run frontend tests
+cd frontend && npm run test
 
 # Run frontend linting
 cd frontend && npm run lint
