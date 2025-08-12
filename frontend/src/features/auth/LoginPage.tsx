@@ -73,7 +73,7 @@ export default function LoginPage() {
                         {...field} 
                       />
                     </FormControl>
-                    <FormMessage data-testid="email-error" />
+                    <FormMessage id={`${field.name}-error`} data-testid="email-error" />
                   </FormItem>
                 )}
               />
