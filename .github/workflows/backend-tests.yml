@@ -37,5 +37,6 @@ jobs:
         working-directory: ./backend
         env:
           SECRET_KEY: testkey123
+          PYTHONPATH: ${PYTHONPATH}:${PWD}
         run: |
           ./run-checks.sh
