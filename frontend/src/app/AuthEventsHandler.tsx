@@ -8,11 +8,23 @@ export function AuthEventsHandler() {
 
   useEffect(() => {
     const unsubscribe = authEvents.onUnauthorized(async () => {
-      await queryClient.clear();
-      const loc = window.location.pathname + window.location.search;
-      const to = `/login?from=${encodeURIComponent(loc)}`;
-      if (window.location.pathname !== "/login") {
-        navigate(to, { replace: true });
+      try {
+        // Call logout endpoint to clear cookies
+        await fetch(`${import.meta.env.VITE_API_URL}/api/logout`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+      } catch (error) {
+        console.error('Failed to logout:', error);
+      } finally {
+        // Clear all queries from cache
+        await queryClient.clear();
+        // Redirect to login with return path
+        const loc = window.location.pathname + window.location.search;
+        const to = `/login?from=${encodeURIComponent(loc)}`;
+        if (window.location.pathname !== "/login") {
+          navigate(to, { replace: true });
+        }
       }
     });
 

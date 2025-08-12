@@ -22,7 +22,13 @@ async function requestOnce<T>(path: string, opts: RequestInit): Promise<T> {
   });
   const text = await res.text();
   const data = text ? JSON.parse(text) : null;
-  if (!res.ok) throw new HttpError(res.status, data?.detail || res.statusText);
+  if (!res.ok) {
+    // Emit unauthorized event for 401s
+    if (res.status === 401) {
+      authEvents.emitUnauthorized();
+    }
+    throw new HttpError(res.status, data?.detail || res.statusText);
+  }
   return data as T;
 }
 

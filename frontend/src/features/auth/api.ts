@@ -1,6 +1,11 @@
 import { apiFetch } from "@/lib/api";
 
-export type Me = { id: string; email: string };
+export type Me = { 
+  id: string; 
+  email: string;
+  username: string;
+  created_at: string;
+};
 
 export type LoginPayload = { email: string; password: string };
 
@@ -25,4 +30,8 @@ export const register = (b: RegisterPayload) =>
   });
 
 export const logout = () =>
-  apiFetch<{ ok: true }>("/api/logout", { method: "POST" });
+  apiFetch<{ ok: true }>("/api/logout", {
+    method: "POST",
+  });
+
+
