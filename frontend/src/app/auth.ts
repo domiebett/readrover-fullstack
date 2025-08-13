@@ -5,7 +5,7 @@ import { HttpError } from "@/lib/api";
 
 const meKey = ["me"];
 
-async function meLoader() {
+export async function meLoader() {
   // Use fetchQuery instead of ensureQueryData to better control caching
   const result = await queryClient.fetchQuery({
     queryKey: meKey,

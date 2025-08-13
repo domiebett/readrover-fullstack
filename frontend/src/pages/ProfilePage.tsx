@@ -1,8 +1,8 @@
 import { Loader2 } from "lucide-react";
-import { useProfile } from "./hooks/useProfile";
-import { ProfileCard } from "./ProfileCard";
-import { ReadingStatsCard } from "./ReadingStatsCard";
-import { ReadingJourneyCard } from "./ReadingJourneyCard";
+import { useProfile } from "../features/profile/hooks/useProfile";
+import { ProfileCard } from "../features/profile/ProfileCard";
+import { ReadingStatsCard } from "../features/profile/ReadingStatsCard";
+import { ReadingJourneyCard } from "../features/profile/ReadingJourneyCard";
 
 export default function ProfilePage() {
   const { data: profile, isLoading, error } = useProfile();
@@ -10,7 +10,7 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[50vh]">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <Loader2 className="h-8 w-8 animate-spin" data-testid="loading-spinner" />
       </div>
     );
   }
@@ -39,7 +39,6 @@ export default function ProfilePage() {
           </h1>
           <p className="text-lg text-yellow-700 font-medium">Continue your literary journey</p>
         </div>
-
         <div className="grid md:grid-cols-3 gap-8">
           <ProfileCard
             username={profile?.username}
