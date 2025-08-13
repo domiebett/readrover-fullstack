@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Loader2, UserCircle } from "lucide-react";
+import { UserCircle } from "lucide-react";
 import { queryClient } from "@/app/queryClient";
 
 // Query key for user data
@@ -73,23 +73,16 @@ function Header() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link to="/profile" className="cursor-pointer">Profile</Link>
+                <DropdownMenuItem role="menuitem" onClick={() => navigate('/profile')}>
+                  Profile
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
+                <DropdownMenuItem
+                  role="menuitem"
                   className="cursor-pointer text-red-600"
                   onClick={() => logoutMutation.mutate()}
-                  disabled={logoutMutation.isPending}
                 >
-                  {logoutMutation.isPending ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      Logging out...
-                    </>
-                  ) : (
-                    "Logout"
-                  )}
+                  Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

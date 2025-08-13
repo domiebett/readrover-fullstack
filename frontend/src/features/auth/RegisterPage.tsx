@@ -15,14 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form/form";
 
 const schema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -57,47 +50,74 @@ export default function RegisterPage() {
     <div className="container flex items-center justify-center min-h-screen py-8">
       <Card className="w-[380px]">
         <CardHeader>
-          <CardTitle>Create an Account</CardTitle>
+          <CardTitle role="heading" aria-level={1}>Create an Account</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit((data) => mut.mutate(data))} className="space-y-4">
+            <form 
+              onSubmit={form.handleSubmit((data) => mut.mutate(data))} 
+              className="space-y-4"
+              noValidate
+            >
               <FormField
                 control={form.control}
                 name="username"
-                render={({ field }) => (
+                render={({ field, formState }) => (
                   <FormItem>
                     <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your username" {...field} />
+                      <Input 
+                        placeholder="Enter your username"
+                        aria-invalid={!!formState.errors.username}
+                        aria-describedby={
+                          formState.errors.username ? `${field.name}-error` : undefined
+                        }
+                        {...field}
+                      />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage id={`${field.name}-error`} data-testid="username-error" />
                   </FormItem>
                 )}
               />
               <FormField
                 control={form.control}
                 name="email"
-                render={({ field }) => (
+                render={({ field, formState }) => (
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your email" type="email" {...field} />
+                      <Input 
+                        placeholder="Enter your email" 
+                        type="email"
+                        aria-invalid={!!formState.errors.email}
+                        aria-describedby={
+                          formState.errors.email ? `${field.name}-error` : undefined
+                        }
+                        {...field}
+                      />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage id={`${field.name}-error`} data-testid="email-error" />
                   </FormItem>
                 )}
               />
               <FormField
                 control={form.control}
                 name="password"
-                render={({ field }) => (
+                render={({ field, formState }) => (
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="Choose a password" type="password" {...field} />
+                      <Input 
+                        placeholder="Choose a password" 
+                        type="password"
+                        aria-invalid={!!formState.errors.password}
+                        aria-describedby={
+                          formState.errors.password ? `${field.name}-error` : undefined
+                        }
+                        {...field}
+                      />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage id={`${field.name}-error`} data-testid="password-error" />
                   </FormItem>
                 )}
               />
