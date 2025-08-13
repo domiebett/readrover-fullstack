@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button/index";
+import { Button } from "@/components/ui/button/button";
 import { Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { HttpError } from "@/lib/api";
