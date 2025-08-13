@@ -7,9 +7,6 @@ import { Header } from "@/layouts/Header";
 export function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
-      {/* Background texture overlay */}
-      <div className="absolute inset-0 opacity-5 bg-[url('/placeholder-fzipf.png')] bg-repeat"></div>
-
       <div className="relative">
         <Header mode="landing" />
 

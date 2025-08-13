@@ -47,9 +47,6 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50 flex items-center justify-center p-4">
-      {/* Background texture overlay */}
-      <div className="absolute inset-0 opacity-5 bg-[url('/placeholder-fzipf.png')] bg-repeat"></div>
-
       <div className="relative w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
