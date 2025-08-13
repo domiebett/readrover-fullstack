@@ -2,6 +2,12 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { queryClient } from "./queryClient";
 import { authEvents } from "./authEvents";
+import { getPublicRoutePaths } from "./routesConfig";
+
+function isCurrentRoutePublic() {
+  const publicPaths = getPublicRoutePaths();
+  return publicPaths.includes(window.location.pathname);
+}
 
 export function AuthEventsHandler() {
   const navigate = useNavigate();
@@ -19,11 +25,13 @@ export function AuthEventsHandler() {
       } finally {
         // Clear all queries from cache
         await queryClient.clear();
-        // Redirect to login with return path
-        const loc = window.location.pathname + window.location.search;
-        const to = `/login?from=${encodeURIComponent(loc)}`;
-        if (window.location.pathname !== "/login") {
-          navigate(to, { replace: true });
+        // Only redirect to login if not on a public route
+        if (!isCurrentRoutePublic()) {
+          const loc = window.location.pathname + window.location.search;
+          const to = `/login?from=${encodeURIComponent(loc)}`;
+          if (window.location.pathname !== "/login") {
+            navigate(to, { replace: true });
+          }
         }
       }
     });
