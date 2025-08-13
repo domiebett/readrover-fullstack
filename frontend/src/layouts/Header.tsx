@@ -36,7 +36,7 @@ export function Header() {
   });
 
   return (
-    <header className="border-b">
+    <header className="border-b flex justify-center">
       <div className="container py-4">
         <div className="flex justify-between items-center gap-4">
           <Link to="/" className="text-lg font-semibold shrink-0">
