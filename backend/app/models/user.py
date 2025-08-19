@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, func
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
@@ -13,3 +13,14 @@ class User(Base):
     hashed_password = Column(String(255), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    # Relationships
+    user_books = relationship(
+        "UserBook",
+        back_populates="user",
+        foreign_keys="UserBook.user_id"
+    )
+    shared_books = relationship(
+        "UserBook",
+        foreign_keys="UserBook.shared_by_user_id"
+    )
