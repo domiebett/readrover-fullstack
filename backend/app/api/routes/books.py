@@ -6,25 +6,28 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.utils.auth_utils import get_current_user
-from app.services.book_service import BookService
+from app.services.book_service import (
+    create_book, get_user_books, get_user_book, update_book,
+    update_user_book, delete_book, share_book_func, get_shared_books,
+    get_books_shared_by_user
+)
 from app.schemas.book import (
     BookResponse, BookListResponse, BookUpdate, BookUploadResponse,
     UserBookResponse, UserBookUpdate, BookShareRequest
 )
 
 router = APIRouter()
-book_service = BookService()
 
 
 @router.get("/books", response_model=BookListResponse)
-async def get_user_books(
+async def get_user_books_route(
     skip: int = 0,
     limit: int = 100,
     current_user: dict = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """Get all books for the current user."""
-    user_books = await book_service.get_user_books(
+    user_books = await get_user_books(
         db, current_user["user_id"], skip=skip, limit=limit
     )
 
@@ -37,37 +40,37 @@ async def get_user_books(
 
 
 @router.get("/books/shared-with-me", response_model=List[UserBookResponse])
-async def get_shared_books(
+async def get_shared_books_route(
     current_user: dict = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """Get books shared with the current user."""
-    shared_books = await book_service.get_shared_books(
+    shared_books = await get_shared_books(
         db, current_user["user_id"]
     )
     return [UserBookResponse.model_validate(ub) for ub in shared_books]
 
 
 @router.get("/books/shared-by-me", response_model=List[UserBookResponse])
-async def get_books_shared_by_me(
+async def get_books_shared_by_me_route(
     current_user: dict = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """Get books shared by the current user."""
-    shared_books = await book_service.get_books_shared_by_user(
+    shared_books = await get_books_shared_by_user(
         db, current_user["user_id"]
     )
     return [UserBookResponse.model_validate(ub) for ub in shared_books]
 
 
 @router.get("/books/{book_id}", response_model=UserBookResponse)
-async def get_user_book(
+async def get_user_book_route(
     book_id: int,
     current_user: dict = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """Get a specific book for the current user."""
-    user_book = await book_service.get_user_book(
+    user_book = await get_user_book(
         db, current_user["user_id"], book_id
     )
     if not user_book:
@@ -119,14 +122,16 @@ async def upload_book(
     )
 
     # Create book record
-    book = await book_service.create_book(
+    book = await create_book(
         db, book_data, current_user["user_id"]
     )
 
     # Save file to storage
     import io
     file_bytes = io.BytesIO(file_content)
-    await book_service.storage_service.save_book_file(
+    from app.services.storage_service import StorageService
+    storage_service = StorageService()
+    await storage_service.save_book_file(
         book.uuid, file_type, file_bytes
     )
 
@@ -137,7 +142,7 @@ async def upload_book(
 
 
 @router.put("/books/{book_id}", response_model=BookResponse)
-async def update_book(
+async def update_book_route(
     book_id: int,
     book_data: BookUpdate,
     current_user: dict = Depends(get_current_user),
@@ -145,7 +150,7 @@ async def update_book(
 ):
     """Update a book."""
     # Check if user has access to the book
-    user_book = await book_service.get_user_book(
+    user_book = await get_user_book(
         db, current_user["user_id"], book_id
     )
     if not user_book:
@@ -154,7 +159,7 @@ async def update_book(
             detail="Book not found"
         )
 
-    book = await book_service.update_book(db, book_id, book_data)
+    book = await update_book(db, book_id, book_data)
     if not book:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -165,14 +170,14 @@ async def update_book(
 
 
 @router.put("/books/{book_id}/user-book", response_model=UserBookResponse)
-async def update_user_book(
+async def update_user_book_route(
     book_id: int,
     user_book_data: UserBookUpdate,
     current_user: dict = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """Update user's book relationship (reading progress, notes, etc.)."""
-    user_book = await book_service.update_user_book(
+    user_book = await update_user_book(
         db, current_user["user_id"], book_id, user_book_data
     )
     if not user_book:
@@ -185,13 +190,13 @@ async def update_user_book(
 
 
 @router.delete("/books/{book_id}")
-async def delete_book(
+async def delete_book_route(
     book_id: int,
     current_user: dict = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """Delete a book."""
-    success = await book_service.delete_book(
+    success = await delete_book(
         db, book_id, current_user["user_id"]
     )
     if not success:
@@ -204,14 +209,14 @@ async def delete_book(
 
 
 @router.post("/books/{book_id}/share")
-async def share_book(
+async def share_book_route(
     book_id: int,
     share_request: BookShareRequest,
     current_user: dict = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
     """Share a book with another user."""
-    await book_service.share_book(
+    await share_book_func(
         db, current_user["user_id"], book_id, share_request.recipient_email
     )
 
