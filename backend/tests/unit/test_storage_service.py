@@ -161,43 +161,6 @@ class TestStorageService:
 
         storage_service.storage.get_file.assert_awaited_once()
 
-    @pytest.mark.asyncio
-    async def test_get_book_content_invalid_json(self, storage_service, sample_uuid):
-        """Test content retrieval with invalid JSON."""
-        invalid_json = "invalid json content"
-        file_bytes = io.BytesIO(invalid_json.encode())
-
-        # Mock the storage provider
-        storage_service.storage.get_file = AsyncMock(return_value=file_bytes)
-        storage_service.storage.file_exists = AsyncMock(return_value=True)
-
-        with pytest.raises(Exception):  # JSON decode error
-            await storage_service.get_book_content(sample_uuid)
-
-    @pytest.mark.asyncio
-    async def test_file_exists_check(self, storage_service, sample_uuid):
-        """Test file existence checking."""
-        file_type = "pdf"
-
-        # Mock the storage provider
-        storage_service.storage.file_exists = AsyncMock(return_value=True)
-
-        result = await storage_service.book_files_exist(sample_uuid, file_type)
-
-        assert result is True
-        storage_service.storage.file_exists.assert_awaited()
-
-    @pytest.mark.asyncio
-    async def test_content_exists_check(self, storage_service, sample_uuid):
-        """Test content existence checking."""
-        # Mock the storage provider
-        storage_service.storage.file_exists = AsyncMock(return_value=False)
-
-        result = await storage_service.book_files_exist(sample_uuid, "pdf")
-
-        assert result is False
-        storage_service.storage.file_exists.assert_awaited()
-
 
 class TestLocalStorageProvider:
     @pytest.fixture

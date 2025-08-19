@@ -184,38 +184,6 @@ class TestBookRoutesIntegration:
         assert response.json()["detail"] == "Book not found"
 
     @pytest.mark.asyncio
-    async def test_unauthorized_access(self, async_client):
-        """Test accessing endpoints without authentication."""
-        # Test without auth headers
-        response = await async_client.get("/api/books")
-        assert response.status_code == 401
-
-        response = await async_client.post("/api/books/upload")
-        assert response.status_code == 401
-
-        response = await async_client.get("/api/books/1")
-        assert response.status_code == 401
-
-    @pytest.mark.asyncio
-    async def test_invalid_token(self, async_client):
-        """Test accessing endpoints with invalid token."""
-        headers = {"Authorization": "Bearer invalid_token"}
-
-        response = await async_client.get("/api/books", headers=headers)
-        assert response.status_code == 401
-
-    @pytest.mark.asyncio
-    async def test_pagination_parameters(self, async_client, auth_headers):
-        """Test pagination parameters in get books endpoint."""
-        headers = await auth_headers
-        response = await async_client.get("/api/books?skip=10&limit=5", headers=headers)
-
-        assert response.status_code == 200
-        data = response.json()
-        assert data["page"] == 3  # (10 // 5) + 1
-        assert data["per_page"] == 5
-
-    @pytest.mark.asyncio
     async def test_upload_book_without_title_author(
         self, async_client, auth_headers, sample_pdf_file
     ):

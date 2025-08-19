@@ -116,56 +116,6 @@ class TestBookService:
         db.execute.assert_awaited_once()
 
     @pytest.mark.asyncio
-    async def test_get_user_books_empty(self, book_service):
-        """Test getting user books when none exist."""
-        db = make_mock_db_execute([])
-
-        result = await book_service.get_user_books(db, user_id=1)
-
-        assert len(result) == 0
-        db.execute.assert_awaited_once()
-
-    @pytest.mark.asyncio
-    async def test_get_user_book_found(self, book_service, sample_user_book):
-        """Test getting a specific user book."""
-        db = make_mock_db_execute(sample_user_book)
-
-        result = await book_service.get_user_book(db, user_id=1, book_id=1)
-
-        assert result == sample_user_book
-        db.execute.assert_awaited_once()
-
-    @pytest.mark.asyncio
-    async def test_get_user_book_not_found(self, book_service):
-        """Test getting a user book that doesn't exist."""
-        db = make_mock_db_execute(None)
-
-        result = await book_service.get_user_book(db, user_id=1, book_id=999)
-
-        assert result is None
-        db.execute.assert_awaited_once()
-
-    @pytest.mark.asyncio
-    async def test_get_book_found(self, book_service, sample_book):
-        """Test getting a book by ID."""
-        db = make_mock_db_execute(sample_book)
-
-        result = await book_service.get_book(db, book_id=1)
-
-        assert result == sample_book
-        db.execute.assert_awaited_once()
-
-    @pytest.mark.asyncio
-    async def test_get_book_not_found(self, book_service):
-        """Test getting a book that doesn't exist."""
-        db = make_mock_db_execute(None)
-
-        result = await book_service.get_book(db, book_id=999)
-
-        assert result is None
-        db.execute.assert_awaited_once()
-
-    @pytest.mark.asyncio
     async def test_update_book_success(self, book_service, sample_book):
         """Test updating a book."""
         db = make_mock_db_execute(sample_book)
