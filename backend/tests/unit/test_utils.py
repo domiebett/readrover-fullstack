@@ -26,7 +26,12 @@ def make_mock_db_execute(scalar_result):
     with scalar_one_or_none() returning scalar_result.
     """
     db = AsyncMock()
-    mock_result = AsyncMock()
+    mock_result = Mock()
     mock_result.scalar_one_or_none = Mock(return_value=scalar_result)
+    mock_result.scalars = Mock(return_value=mock_result)
+    if isinstance(scalar_result, list):
+        mock_result.all = Mock(return_value=scalar_result)
+    else:
+        mock_result.all = Mock(return_value=[scalar_result])
     db.execute = AsyncMock(return_value=mock_result)
     return db

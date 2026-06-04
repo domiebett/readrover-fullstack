@@ -1,0 +1,37 @@
+FROM python:3.11-slim
+WORKDIR /app
+ENV PYTHONPATH=/app
+
+# Install system dependencies for development
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install development dependencies
+COPY requirements.txt ./
+COPY requirements-dev.txt ./
+RUN pip install --no-cache-dir -r requirements-dev.txt
+
+# Copy application code and development files
+COPY app ./app
+COPY tests ./tests
+COPY alembic ./alembic
+COPY alembic.ini ./
+COPY pytest.ini ./
+COPY .flake8 ./
+COPY run-checks.sh ./
+COPY requirements.txt ./
+COPY requirements-dev.txt ./
+COPY .env .env
+COPY .env.example ./
+RUN chmod +x run-checks.sh
+
+# Create non-root user for security
+RUN adduser --disabled-password --gecos '' appuser && chown -R appuser:appuser /app
+USER appuser
+
+# Expose port
+EXPOSE 8000
+
+# Default command for development
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

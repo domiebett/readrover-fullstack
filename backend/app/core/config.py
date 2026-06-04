@@ -40,5 +40,18 @@ def get_db_url():
         (
             f"postgresql+asyncpg://{get_db_user()}:{get_db_password()}"
             f"@{get_db_host()}:{get_db_port()}/{get_db_name()}"
-        )
+        ),
     )
+
+
+# Storage configuration functions
+def get_storage_type():
+    return os.getenv("STORAGE_TYPE", "local")
+
+
+def get_local_storage_path():
+    return os.getenv("LOCAL_STORAGE_PATH", "uploads")
+
+
+def get_cloud_storage_path():
+    return os.getenv("CLOUD_STORAGE_PATH", "uploads/cloud")

@@ -21,3 +21,6 @@ ENV/
 
 # Docker
 *.db
+
+# Uploads
+uploads/

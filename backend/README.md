@@ -44,7 +44,11 @@ python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
-pip install -r requirements.txt
+# For development (includes testing tools):
+pip install -r requirements-dev.txt
+
+# For production only:
+# pip install -r requirements.txt
 
 # Copy environment file
 cp .env.example .env
@@ -111,7 +115,8 @@ backend/
 │   └── test_health.py     # Health endpoint tests
 ├── alembic.ini            # Alembic configuration file
 ├── pytest.ini            # Pytest configuration
-├── requirements.txt       # Python dependencies
+├── requirements.txt       # Production Python dependencies
+├── requirements-dev.txt   # Development Python dependencies
 └── run-checks.sh          # Test and lint runner script
 ```
 
