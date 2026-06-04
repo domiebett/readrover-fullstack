@@ -72,4 +72,4 @@ class UserBook(Base):
         "User", foreign_keys=[user_id], back_populates="user_books"
     )
     book = relationship("Book", back_populates="user_books")
-    shared_by_user = relationship("User", foreign_keys=[shared_by_user_id], overlaps="shared_books")
+    shared_by_user = relationship("User", foreign_keys=[shared_by_user_id], back_populates="shared_books")

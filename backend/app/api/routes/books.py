@@ -32,7 +32,7 @@ async def get_user_books_route(
     )
 
     return BookListResponse(
-        books=[UserBookResponse.model_validate(ub) for ub in user_books],
+        books=[BookResponse.model_validate(ub) for ub in user_books],
         total=len(user_books),
         page=skip // limit + 1,
         per_page=limit

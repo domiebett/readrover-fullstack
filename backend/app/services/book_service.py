@@ -11,7 +11,7 @@ from app.services.storage_service import StorageService
 from app.services.user_service import get_user_by_email_case_insensitive
 
 # Initialize storage service as a module-level dependency
-_storage_service = StorageService()
+# StorageService should be injected as a dependency where needed, not as a module-level instance.
 
 
 async def create_book(
